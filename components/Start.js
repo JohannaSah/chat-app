@@ -56,7 +56,7 @@ const Start = ({ navigation }) => {
                             {/* Using TouchableOpacity instead of Button to allow for more flexible styling options and a better user experience on touch screens */}
                             <TouchableOpacity
                                 style={[
-                                    styles.color,
+                                    styles.color, 
                                     black, // Sets the color of the button
                                     color === black.backgroundColor ? styles.colorSelected : {} // Determine if current color is selected, if yes, apply 'colorSelected' style, otherwise apply an empty object
                                 ]}
@@ -121,7 +121,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 50,
         fontWeight: '600',
-        marginTop: '25%',
+        marginTop: 60,
+        marginBottom: 20,
         color: 'black'
     },
     /* Input Box Styles */
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: 'black',
         borderWidth: 1,
-        marginTop: 30,
+        marginTop: 10,
     }
 });
 
