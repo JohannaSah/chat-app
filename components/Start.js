@@ -134,7 +134,10 @@ const Start = ({ navigation }) => {
                         style={styles.button}
                         title='Go to Chat'
                         // A function that navigates to the specified screen while giving it the typed in name and the chosen background color
-                        onPress={ { signInUser, name: name, color: color } }
+                        onPress={() => {
+                            signInUser();
+                            navigation.navigate("Chat", { name: name, color: color });
+                        }}
                     >
                         <Text> Start Chatting </Text>
                     </TouchableOpacity>
