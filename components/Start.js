@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
         opacity: 0.7,
         marginBottom: '25%',
         padding: '10%',
-        height: '50%',
+        height: 250,
         width: '88%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -147,12 +147,13 @@ const styles = StyleSheet.create({
         fontWeight: '300',
         paddingLeft: 10,
     },
-    /* Input Box Styles -> container */
+    /* Input Box Styles -> color container */
     colorChoice: {
         marginTop: 10,
         marginBottom: 10,
+        alignItems: "center",
     },
-    /* Input Box Styles -> button container */
+    /* Input Box Styles -> color button container */
     colorWrapper: {
         marginTop: 20,
         width: "100%",
