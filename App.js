@@ -1,6 +1,4 @@
 // Import necessary modules and components
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { initializeApp } from "firebase/app";
@@ -31,7 +29,6 @@ export default function App() {
 
   // Initialize Cloud Firestore and get a reference to the service
   const db = getFirestore(app); 
-  
 
   // Render the NavigationContainer and Stack Navigator
   return (
@@ -44,24 +41,16 @@ export default function App() {
         {/* Renders the Start component as a screen with a name of 'Start' */}
         <Stack.Screen 
             name='Start'
-            component={Start}
-        />
+        >
+          {props => <Start db={db} {...props} />}
+        </Stack.Screen>
         {/* Renders the Chat component as a screen with a name of 'Chat' */}
-        <Stack.Screen 
-            name='Chat'
-            component={Chat}
-        />
+        <Stack.Screen
+         name="Chat"
+       >
+         {props => <Chat db={db} {...props} />}
+       </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-// Define styles for our components
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
