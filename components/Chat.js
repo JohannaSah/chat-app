@@ -81,7 +81,7 @@ const Chat = ({ route, navigation }) => {
                 pending: true,
             }
         ])
-    });
+    }, []);
 
     
     // Render the Chat screen with background color and text
