@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
-const Chat = ({ route, navigation }) => {
+const Chat = ({ db, route, navigation }) => {
 
     // Destructure name and color from route params
     const { name, color } = route.params;
