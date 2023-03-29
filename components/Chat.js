@@ -1,6 +1,6 @@
 // Import required modules
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text, Video } from 'react-native';
+import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 const Chat = ({ route, navigation }) => {
@@ -62,20 +62,6 @@ const Chat = ({ route, navigation }) => {
                 text: 'Hello developer',
                 // The timestamp indicating when the message was created
                 createdAt: new Date(),
-                // The quick replies options for the message
-                quickReplies: {
-                    type: 'checkbox', // or 'radio',
-                    values: [
-                      {
-                        title: 'Yes',
-                        value: 'yes',
-                      },
-                      {
-                        title: 'Nope. What?',
-                        value: 'no',
-                      },
-                    ],
-                },
                 // The user object associated with the message
                 user: {
                     _id: 2,
@@ -125,6 +111,11 @@ const Chat = ({ route, navigation }) => {
 
         {/* A touchable component that navigates to th Start screen when pressed */}
         <TouchableOpacity 
+            // Provide accessibility for screenreaders
+            accessible={true}
+            accessibilityLabel="Leave chat"
+            accessibilityHint="Let’s you  leave the chat and return to the start screen."
+            accessibilityRole="button"
             // An object containing style rules for the TouchableOpacity component
             style={styles.button}
             title='Go to Start'

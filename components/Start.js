@@ -55,14 +55,25 @@ const Start = ({ navigation }) => {
                         <View style={styles.colorWrapper}>
                             {/* Using TouchableOpacity instead of Button to allow for more flexible styling options and a better user experience on touch screens */}
                             <TouchableOpacity
+                                // Provide accessibility for screenreaders
+                                accessible={true}
+                                accessibilityLabel="black"
+                                accessibilityHint="Let’s you set the chat window´s background color to black."
+                                accessibilityRole="button"
+                                // Styles the pressable background color choice
                                 style={[
                                     styles.color, 
                                     black, // Sets the color of the button
                                     color === black.backgroundColor ? styles.colorSelected : {} // Determine if current color is selected, if yes, apply 'colorSelected' style, otherwise apply an empty object
                                 ]}
-                                onPress={() => handleColorChange(black.backgroundColor)} // Sets the background color to the chosen one when the color button is pressed
+                                // Sets the background color to the chosen one when the color button is pressed
+                                onPress={() => handleColorChange(black.backgroundColor)} 
                             />
                             <TouchableOpacity
+                                accessible={true}
+                                accessibilityLabel="blue"
+                                accessibilityHint="Let’s you set the chat window´s background color to blue."
+                                accessibilityRole="button"
                                 style={[
                                     styles.color,
                                     blue,
@@ -71,6 +82,10 @@ const Start = ({ navigation }) => {
                                 onPress={() => handleColorChange(blue.backgroundColor)}
                             />
                             <TouchableOpacity
+                                accessible={true}
+                                accessibilityLabel="sand"
+                                accessibilityHint="Let’s you set the chat window´s background color to sand."
+                                accessibilityRole="button"
                                 style={[
                                     styles.color,
                                     sand,
@@ -79,6 +94,10 @@ const Start = ({ navigation }) => {
                                 onPress={() => handleColorChange(sand.backgroundColor)}
                             />
                             <TouchableOpacity
+                                accessible={true}
+                                accessibilityLabel="lightygrey"
+                                accessibilityHint="Let’s you set the chat window´s background color to lightgrey."
+                                accessibilityRole="button"
                                 style={[
                                     styles.color,
                                     lightgrey,
@@ -91,6 +110,10 @@ const Start = ({ navigation }) => {
 
                     {/* A touchable component that navigates to th Chat screen when pressed */}
                     <TouchableOpacity 
+                        accessible={true}
+                        accessibilityLabel="Go to chat"
+                        accessibilityHint="Button that when clicked takes you to the chat. It will implement your chosen username and backgroundcolor."
+                        accessibilityRole="button"
                         // An object containing style rules for the TouchableOpacity component
                         style={styles.button}
                         title='Go to Chat'
