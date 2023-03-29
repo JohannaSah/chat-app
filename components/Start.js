@@ -89,9 +89,12 @@ const Start = ({ navigation }) => {
                         </View>
                     </View>
 
-                    {/* The TouchableOpacity contains the button that navigates the user to the Chat screen */}
-                    <TouchableOpacity style={styles.button} 
+                    {/* A touchable component that navigates to th Chat screen when pressed */}
+                    <TouchableOpacity 
+                        // An object containing style rules for the TouchableOpacity component
+                        style={styles.button}
                         title='Go to Chat'
+                        // A function that navigates to the specified screen while giving it the typed in name and the chosen background color
                         onPress={ () => navigation.navigate('Chat', {name: name, color: color}) }
                     >
                         <Text> Start Chatting </Text>
