@@ -1,7 +1,7 @@
 // Import required modules
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat';
+import { StyleSheet, View } from 'react-native';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
 const Chat = ({ route, navigation }) => {
 
@@ -14,7 +14,24 @@ const Chat = ({ route, navigation }) => {
     // Updates the messages state variable by appending new messages to the existing ones
     const onSend = (newMessages) => {
         setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
-    }
+    };
+
+    // Renders a chat bubble with a custom background color based on whether the message is sent by the user or received by the user
+    const renderBubble = (props) => {
+        return (
+            <Bubble 
+                {...props}
+                wrapperStyle={{
+                    right: {
+                      backgroundColor: "#C9EEFF",
+                    },
+                    left: {
+                      backgroundColor: "#FFDD83",
+                    },
+                }}
+            />
+        )
+    };
 
      // Set the navigation title to the name using useEffect hook
      useEffect( () => {
@@ -70,9 +87,15 @@ const Chat = ({ route, navigation }) => {
     // Render the Chat screen with background color and text
     return (
       <View style={[styles.container, {backgroundColor: color}]}>
+        {/* A component that renders a chat interface using the GiftedChat library */}
         <GiftedChat
+            // An array of message objects to be displayed in the chat
             messages={messages}
+            // A function that renders the chat bubbles for each message
+            renderBubble={renderBubble}
+            // A callback function that is called when the user sends a new message
             onSend={messages => onSend(messages)}
+            // user._id - The unique ID of the current user
             user={{
                 _id: 1
             }}
