@@ -1,6 +1,7 @@
 // Import required modules
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ImageBackground } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ImageBackground, Alert } from 'react-native';
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 // Define a set of background color options as key-value pairs
 const backgroundColors = {
@@ -12,6 +13,21 @@ const backgroundColors = {
 
   // Render the Start screen
 const Start = ({ navigation }) => {
+
+    // Initialize firebase authentication handler
+    const auth = getAuth();
+
+    // Define signInUser function for anaonymous sign in 
+    const signInUser = () => {
+        signInAnonymously(auth)
+        .then( result => {
+            navigation.navigate( "Chat", { userID: result.user.id });
+            Alert.alert("You have signed in successfully!");
+        })
+        .catch((error) => {
+            Alert.alert("Sign in was unsuccessful. Please try again later");
+        })
+    }
 
     // Declare state variables for the user's name and selected background color
     const [name, setName] = useState('');
@@ -118,7 +134,7 @@ const Start = ({ navigation }) => {
                         style={styles.button}
                         title='Go to Chat'
                         // A function that navigates to the specified screen while giving it the typed in name and the chosen background color
-                        onPress={ () => navigation.navigate('Chat', {name: name, color: color}) }
+                        onPress={ { signInUser, name: name, color: color } }
                     >
                         <Text> Start Chatting </Text>
                     </TouchableOpacity>
