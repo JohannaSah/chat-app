@@ -8,10 +8,10 @@ const Chat = ({ route, navigation }) => {
     // Destructure name and color from route params
     const { name, color } = route.params;
     
-    //
+    // Represents the state variable that stores the messages in the chat
     const [messages, setMessages] = useState([]);
 
-    //
+    // Updates the messages state variable by appending new messages to the existing ones
     const onSend = (newMessages) => {
         setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
     }
@@ -26,9 +26,13 @@ const Chat = ({ route, navigation }) => {
     useEffect ( () => {
         setMessages([
             {
+                // Unique identifier for the message
                 _id: 1,
+                // The text content of the message
                 text: 'Hello developer',
+                // The timestamp indicating when the message was created
                 createdAt: new Date(),
+                // The quick replies options for the message
                 quickReplies: {
                     type: 'checkbox', // or 'radio',
                     values: [
@@ -42,6 +46,7 @@ const Chat = ({ route, navigation }) => {
                       },
                     ],
                 },
+                // The user object associated with the message
                 user: {
                     _id: 2,
                     name: 'React Native',
@@ -65,9 +70,13 @@ const Chat = ({ route, navigation }) => {
     // Render the Chat screen with background color and text
     return (
       <View style={[styles.container, {backgroundColor: color}]}>
-        <Text>
-            Hello Chat
-        </Text>
+        <GiftedChat
+            messages={messages}
+            onSend={messages => onSend(messages)}
+            user={{
+                _id: 1
+            }}
+        />
       </View>
     );
    }
