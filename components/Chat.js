@@ -1,19 +1,20 @@
 // Import required modules
+import { collection, onSnapshot, addDoc } from '@firebase/firestore';
 import { useEffect, useState } from 'react';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, query, orderBy } from 'react-native-gifted-chat';
 
 const Chat = ({ db, route, navigation }) => {
 
-    // Destructure name and color from route params
-    const { name, color } = route.params;
+    // Destructure userID, name and color from route params
+    const { userID, name, color } = route.params;
     
     // Represents the state variable that stores the messages in the chat
     const [messages, setMessages] = useState([]);
 
     // Updates the messages state variable by appending new messages to the existing ones
     const onSend = (newMessages) => {
-        setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages))
+        addDoc(collection(db, "messages"), newMessages[0])
     };
 
     // Renders a chat bubble with a custom background color based on whether the message is sent by the user or received by the user
@@ -54,36 +55,35 @@ const Chat = ({ db, route, navigation }) => {
 
     // Set up structure for gifted chat messages
     useEffect ( () => {
-        setMessages([
-            {
-                // Unique identifier for the message
-                _id: 1,
-                // The text content of the message
-                text: 'Hello developer',
-                // The timestamp indicating when the message was created
-                createdAt: new Date(),
-                // The user object associated with the message
-                user: {
-                    _id: 2,
-                    name: 'React Native',
-                    avatar: 'https://placehold.co/600x400/000000/FFFFFF/png'
-                },
-                // Add an image prop:
-                image: 'https://placehold.co/600x400/000000/FFFFFF/png',
-                // Mark the message as sent, using one tick
-                sent: true,
-                // Mark the message as received, using two tick
-                received: true,
-                // Mark the message as pending with a clock loader
-                pending: true,
-            },
-            {
-                _id: 2,
-                text: 'This is a system message',
-                createdAt: new Date(),
-                system: true,
-              },
-        ])
+        // Query the Firestore collection 'messages' and order them by 'createdAt' field in descending order
+        const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+
+         // Set up a snapshot listener that listens for changes in the 'messages' collection
+        const unsubMessages = onSnapshot( q, (documentsSnapshot) => {
+            // Create an empty array to hold the new messages
+            let newMessages = [];
+            // Loop through each document in the snapshot
+            documentsSnapshot.forEach( doc => {
+                // Push each document's data into the newMessages array as a new message object
+                newMessages.push({
+                    // Set the message ID to the document ID
+                    id: doc.id, 
+                     // Spread the rest of the document data into the message object
+                    ...doc.data(),
+                    // Convert the 'createdAt' timestamp to a Date object and set it as a property of the message object
+                    createdAt: new Date(doc.data().createdAt.toMillis())
+                });
+            });
+
+            // Update the 'messages' state variable with the newMessages array
+            setMessages(newMessages);
+        });
+
+        // Unsubscribe from the snapshot listener when the component unmounts
+        return () => {
+            if (unsubMessages) unsubMessages();
+        }
+        
     }, []);
 
     
@@ -97,10 +97,11 @@ const Chat = ({ db, route, navigation }) => {
             // A function that renders the chat bubbles for each message
             renderBubble={renderBubble}
             // A callback function that is called when the user sends a new message
-            onSend={messages => onSend(messages)}
+            onSend={onSend}
             // user._id - The unique ID of the current user
             user={{
-                _id: 1
+                _id: userID,
+                name: name
             }}
         />
 
