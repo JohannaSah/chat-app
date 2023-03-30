@@ -1,8 +1,9 @@
 // Import required modules
-import { collection, onSnapshot, addDoc } from '@firebase/firestore';
+import { collection, onSnapshot, addDoc, query, orderBy } from '@firebase/firestore';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native';
-import { GiftedChat, Bubble, query, orderBy } from 'react-native-gifted-chat';
+import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text, Platform } from 'react-native';
+import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+
 
 const Chat = ({ db, route, navigation }) => {
 
@@ -48,13 +49,13 @@ const Chat = ({ db, route, navigation }) => {
     };
 
     // Set the navigation title to the name using useEffect hook
-     useEffect( () => {
+     useEffect( function() {
         navigation.setOptions({ title : name }, );
     }, []);
 
 
     // Set up structure for gifted chat messages
-    useEffect ( () => {
+    useEffect ( function() {
         // Query the Firestore collection 'messages' and order them by 'createdAt' field in descending order
         const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
 
