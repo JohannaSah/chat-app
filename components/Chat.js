@@ -1,6 +1,6 @@
 // Import required modules
-import { collection, onSnapshot, addDoc, query, orderBy } from '@firebase/firestore';
 import { useEffect, useState } from 'react';
+import { collection, onSnapshot, addDoc, query, orderBy } from '@firebase/firestore';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text, Platform } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 
@@ -15,8 +15,10 @@ const Chat = ({ db, route, navigation }) => {
 
     // Updates the messages state variable by appending new messages to the existing ones
     const onSend = (newMessages) => {
+        console.log("New messages:", newMessages);
         addDoc(collection(db, "messages"), newMessages[0])
-    };
+      };
+      
 
     // Renders a chat bubble with a custom background color based on whether the message is sent by the user or received by the user
     const renderBubble = (props) => {
@@ -29,7 +31,6 @@ const Chat = ({ db, route, navigation }) => {
                 wrapperStyle={{
                     right: {
                       backgroundColor: "#E1EEDD",
-                      
                     },
                     left: {
                       backgroundColor: "#ECF2FF",
@@ -49,13 +50,13 @@ const Chat = ({ db, route, navigation }) => {
     };
 
     // Set the navigation title to the name using useEffect hook
-     useEffect( function() {
+     useEffect( () => {
         navigation.setOptions({ title : name }, );
     }, []);
 
 
     // Set up structure for gifted chat messages
-    useEffect ( function() {
+    useEffect ( () =>  {
         // Query the Firestore collection 'messages' and order them by 'createdAt' field in descending order
         const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
 
@@ -102,7 +103,8 @@ const Chat = ({ db, route, navigation }) => {
             // user._id - The unique ID of the current user
             user={{
                 _id: userID,
-                name: name
+                name: name,
+                avatar: 'https://example.com/avatar.png',
             }}
         />
 
