@@ -9,6 +9,7 @@ const Chat = ({ db, route, navigation }) => {
 
     // Destructure userID, name and color from route params
     const { userID, name, color } = route.params;
+    console.log('route.params', route.params);
     
     // Represents the state variable that stores the messages in the chat
     const [messages, setMessages] = useState([]);
@@ -51,7 +52,7 @@ const Chat = ({ db, route, navigation }) => {
 
     // Set the navigation title to the name using useEffect hook
      useEffect( () => {
-        navigation.setOptions({ title : name }, );
+        navigation.setOptions({ title : name });
     }, []);
 
 
@@ -69,7 +70,7 @@ const Chat = ({ db, route, navigation }) => {
                 // Push each document's data into the newMessages array as a new message object
                 newMessages.push({
                     // Set the message ID to the document ID
-                    id: doc.id, 
+                    _id: doc.id, 
                      // Spread the rest of the document data into the message object
                     ...doc.data(),
                     // Convert the 'createdAt' timestamp to a Date object and set it as a property of the message object
@@ -103,8 +104,7 @@ const Chat = ({ db, route, navigation }) => {
             // user._id - The unique ID of the current user
             user={{
                 _id: userID,
-                name: name,
-                avatar: 'https://example.com/avatar.png',
+                name: name
             }}
         />
 

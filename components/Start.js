@@ -9,29 +9,30 @@ const backgroundColors = {
     blue: { backgroundColor: "#3A98B9" },
     sand: { backgroundColor: "#FFF1DC" },
     lightgrey: { backgroundColor: "#EEEEEE" },
-  };
+};
 
-  // Render the Start screen
+// Render the Start screen
 const Start = ({ navigation }) => {
 
     // Initialize firebase authentication handler
     const auth = getAuth();
+    
+    // Declare state variables for the user's name and selected background color
+    const [name, setName] = useState('');
+    const [color, setColor] = useState('');
 
     // Define signInUser function for anaonymous sign in 
     const signInUser = () => {
         signInAnonymously(auth)
         .then( result => {
-            navigation.navigate( "Chat", { userID: result.user.id });
+            console.log('logging the result' , result);
+            navigation.navigate( "Chat", { userID: result.user.uid, name: name, color: color });
             Alert.alert("You have signed in successfully!");
         })
         .catch((error) => {
             Alert.alert("Sign in was unsuccessful. Please try again later");
         })
     }
-
-    // Declare state variables for the user's name and selected background color
-    const [name, setName] = useState('');
-    const [color, setColor] = useState('');
 
     //  Updates the selected background color state based on the user's color choice
     const handleColorChange = (newColor) => {
@@ -136,7 +137,6 @@ const Start = ({ navigation }) => {
                         // A function that navigates to the specified screen while giving it the typed in name and the chosen background color
                         onPress={() => {
                             signInUser();
-                            navigation.navigate("Chat", { name: name, color: color });
                         }}
                     >
                         <Text> Start Chatting </Text>
