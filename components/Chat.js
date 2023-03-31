@@ -2,10 +2,11 @@
 import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, addDoc, query, orderBy } from '@firebase/firestore';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text, Platform } from 'react-native';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
-const Chat = ({ db, route, navigation }) => {
+const Chat = ({ db, route, navigation, isConnected }) => {
 
     // Destructure userID, name and color from route params
     const { userID, name, color } = route.params;
@@ -55,40 +56,77 @@ const Chat = ({ db, route, navigation }) => {
         navigation.setOptions({ title : name });
     }, []);
 
+    // Declares a variable for storing a function that can be used to subscribe or unsubscribe from a messages listener
+    let unsubMessages;
 
-    // Set up structure for gifted chat messages
+    // Set up structure for gifted chat messages, as well as on- and offline functionality
     useEffect ( () =>  {
-        // Query the Firestore collection 'messages' and order them by 'createdAt' field in descending order
-        const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+        
+        if (isConnected === true ) {
 
-         // Set up a snapshot listener that listens for changes in the 'messages' collection
-        const unsubMessages = onSnapshot( q, (documentsSnapshot) => {
-            // Create an empty array to hold the new messages
-            let newMessages = [];
-            // Loop through each document in the snapshot
-            documentsSnapshot.forEach( doc => {
-                // Push each document's data into the newMessages array as a new message object
-                newMessages.push({
-                    // Set the message ID to the document ID
-                    _id: doc.id, 
-                     // Spread the rest of the document data into the message object
-                    ...doc.data(),
-                    // Convert the 'createdAt' timestamp to a Date object and set it as a property of the message object
-                    createdAt: new Date(doc.data().createdAt.toMillis())
+            // Unsubscribes from a messages listener if it exists, and sets the listener to null
+            if(unsubMessages) unsubMessages();
+            unsubMessages = null;
+
+            // Query the Firestore collection 'messages' and order them by 'createdAt' field in descending order
+            const q = query(collection(db, "messages"), orderBy("createdAt", "desc"));
+
+            // Set up a snapshot listener that listens for changes in the 'messages' collection
+            unsubMessages = onSnapshot( q, (documentsSnapshot) => {
+                // Create an empty array to hold the new messages
+                let newMessages = [];
+                // Loop through each document in the snapshot
+                documentsSnapshot.forEach( doc => {
+                    // Push each document's data into the newMessages array as a new message object
+                    newMessages.push({
+                        // Set the message ID to the document ID
+                        _id: doc.id, 
+                            // Spread the rest of the document data into the message object
+                        ...doc.data(),
+                        // Convert the 'createdAt' timestamp to a Date object and set it as a property of the message object
+                        createdAt: new Date(doc.data().createdAt.toMillis())
+                    });
                 });
-            });
 
-            // Update the 'messages' state variable with the newMessages array
-            setMessages(newMessages);
-        });
+                // Caches the new messages
+                cacheMessages(newMessages);
+
+                // Update the messages state variable with the newMessages array
+                setMessages(newMessages);
+            });
+        }
+
+        // If not connected to the internet, load cached messages
+        else loadCachedMessages();
 
         // Unsubscribe from the snapshot listener when the component unmounts
         return () => {
             if (unsubMessages) unsubMessages();
         }
         
-    }, []);
+    }, [isConnected]);
 
+    // Caches an array of messages to AsyncStorage
+    const cacheMessages = async (messagesToCache) => {
+        try {
+            await AsyncStorage.setItem('messages', JSON.stringify(messagesToCache));
+        }
+        catch (error) {
+            console.log(error.message);
+        }
+    }
+
+    // Loads cached messages from AsyncStorage
+    const loadCachedMessages = async () => {
+        const cachedMessages = await AsyncStorage.getItem('messages') || [];
+        setMessages(JSON.parse(cachedMessages));
+    }
+
+    // Conditionally renders InputToolbar component based on user's connection
+    const renderInputToolbar = (props) => {
+        if (isConnected) return <InputToolbar {...props} />;
+        else return null;
+    }
     
     // Render the Chat screen with background color and text
     return (
@@ -99,6 +137,8 @@ const Chat = ({ db, route, navigation }) => {
             messages={messages}
             // A function that renders the chat bubbles for each message
             renderBubble={renderBubble}
+            // A function that renders the inputToolbar depending on the internet connectivity
+            renderInputToolbar={renderInputToolbar}
             // A callback function that is called when the user sends a new message
             onSend={onSend}
             // user._id - The unique ID of the current user
