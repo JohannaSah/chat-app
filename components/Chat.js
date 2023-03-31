@@ -1,5 +1,5 @@
 // Import required modules
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, addDoc, query, orderBy } from '@firebase/firestore';
 import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text, Platform } from 'react-native';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
