@@ -25,7 +25,6 @@ const Start = ({ navigation }) => {
     const signInUser = () => {
         signInAnonymously(auth)
         .then( result => {
-            console.log('logging the result' , result);
             navigation.navigate( "Chat", { userID: result.user.uid, name: name, color: color });
             Alert.alert("You have signed in successfully!");
         })
@@ -131,7 +130,6 @@ const Start = ({ navigation }) => {
                         accessibilityLabel="Go to chat"
                         accessibilityHint="Button that when clicked takes you to the chat. It will implement your chosen username and backgroundcolor."
                         accessibilityRole="button"
-                        // An object containing style rules for the TouchableOpacity component
                         style={styles.button}
                         title='Go to Chat'
                         // A function that navigates to the specified screen while giving it the typed in name and the chosen background color
