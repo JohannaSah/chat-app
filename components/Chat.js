@@ -4,8 +4,12 @@ import { collection, onSnapshot, addDoc, query, orderBy } from '@firebase/firest
 import { StyleSheet, View, KeyboardAvoidingView, TouchableOpacity, Text, Platform } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar } from 'react-native-gifted-chat';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapView from 'react-native-maps';
 
+// import required components
+import CustomActions from './CustomActions';
 
+// render Chat screen
 const Chat = ({ db, route, navigation, isConnected }) => {
 
     // Destructure userID, name and color from route params
@@ -127,6 +131,38 @@ const Chat = ({ db, route, navigation, isConnected }) => {
         if (isConnected) return <InputToolbar {...props} />;
         else return null;
     }
+
+    //
+    const renderCustomActions = (props) => {
+        return <CustomActions onSend={onSend} {...props} />;
+    };
+
+    //
+    const renderCustomView = (props) => {
+        //
+        const { currentMessage } = props;
+
+        //
+        if (currentMessage.location) {
+            return (
+                <MapView
+                    style={{
+                        width: 150,
+                        height: 100,
+                        borderRadius: 13,
+                        margin: 3
+                    }}
+                    region={{
+                        latitude: currentMessage.location.latitude,
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421,
+                    }}
+                />
+            );
+        }
+        return null;
+    }
     
     // Render the Chat screen with background color and text
     return (
@@ -139,6 +175,10 @@ const Chat = ({ db, route, navigation, isConnected }) => {
             renderBubble={renderBubble}
             // A function that renders the inputToolbar depending on the internet connectivity
             renderInputToolbar={renderInputToolbar}
+            // function that renders the actions button
+            renderActions={renderCustomActions}
+            // 
+            renderCustomView={renderCustomView}
             // A callback function that is called when the user sends a new message
             onSend={onSend}
             // user._id - The unique ID of the current user
