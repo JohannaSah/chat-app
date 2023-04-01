@@ -10,11 +10,10 @@ import MapView from 'react-native-maps';
 import CustomActions from './CustomActions';
 
 // render Chat screen
-const Chat = ({ db, route, navigation, isConnected }) => {
+const Chat = ({ db, route, navigation, isConnected, storage }) => {
 
-    // Destructure userID, name and color from route params
+    // Destructure userID, name, color and storage from route params
     const { userID, name, color } = route.params;
-    console.log('route.params', route.params);
     
     // Represents the state variable that stores the messages in the chat
     const [messages, setMessages] = useState([]);
@@ -36,19 +35,19 @@ const Chat = ({ db, route, navigation, isConnected }) => {
                 // Set the styles for the chat bubble wrapper based on whether it's on the right or left
                 wrapperStyle={{
                     right: {
-                      backgroundColor: "#E1EEDD",
+                      backgroundColor: "#06416b",
                     },
                     left: {
-                      backgroundColor: "#ECF2FF",
+                      backgroundColor: "#06416b",
                     },
                 }}
                 // Set the text style for the text inside the chat bubble
                 textStyle={{
                     right: {
-                      color: "black"
+                      color: "white"
                     },
                     left: {
-                      color: "black"
+                      color: "white"
                     }
                 }}
             />
@@ -132,17 +131,17 @@ const Chat = ({ db, route, navigation, isConnected }) => {
         else return null;
     }
 
-    //
+    // Render CustomActions component with props
     const renderCustomActions = (props) => {
-        return <CustomActions onSend={onSend} {...props} />;
+        return <CustomActions onSend={onSend} storage={storage} userID={userID} {...props} />;
     };
 
-    //
+    // Render CustomView component with props
     const renderCustomView = (props) => {
-        //
+        // Extract currentMessage from props
         const { currentMessage } = props;
 
-        //
+        // If currentMessage has a location, render a MapView componen
         if (currentMessage.location) {
             return (
                 <MapView
@@ -161,6 +160,8 @@ const Chat = ({ db, route, navigation, isConnected }) => {
                 />
             );
         }
+        
+        // If currentMessage does not have a location, return null (i.e. do not render anything)
         return null;
     }
     
